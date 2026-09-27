@@ -1,0 +1,201 @@
+name: 精选App去开屏
+desc: 淘宝/京东/闲鱼/菜鸟/拼多多/盒马/山姆/微博/小红书/知乎/高德/百度地图/12306/航旅纵横/携程/去哪儿/美团/网易云/爱奇艺/优酷/百度网盘/夸克/网易邮箱
+
+http:
+  mitm:
+    # 电商
+    - "guide-acs.m.taobao.com"
+    - "acs.m.taobao.com"
+    - "api.m.jd.com"
+    - "acs.m.goofish.com"
+    - "cn-acs.m.cainiao.com"
+    - "api.yangkeduo.com"
+    - "api.pinduoduo.com"
+    - "acs-m.freshippo.com"
+    - "api-sams.walmartmobile.cn"
+
+    # 社交 / 内容
+    - "api.weibo.cn"
+    - "*.uve.weibo.com"
+    - "*.xiaohongshu.com"
+    - "api.zhihu.com"
+
+    # 出行
+    - "*.amap.com"
+    - "newclient.map.baidu.com"
+    - "ad.12306.cn"
+    - "*.umetrip.com"
+    - "*.umetrip.com.cn"
+    - "m.ctrip.com"
+    - "ma-adx.ctrip.com"
+    - "homefront.qunar.com"
+    - "client.qunar.com"
+
+    # 本地生活
+    - "*.meituan.com"
+
+    # 视频 / 音乐
+    - "interface*.music.163.com"
+    - "*cupid.iqiyi.com"
+    - "iyes.youku.com"
+
+    # 工具 / 网盘
+    - "pan.baidu.com"
+    - "open-cms-api.quark.cn"
+    - "appconf.mail.163.com"
+    - "client.mail.163.com"
+
+  script:
+    # 知乎开屏
+    - match: '^https?:\/\/api\.zhihu\.com\/commercial_api.*launch_v2'
+      name: selected_zhihu_openads
+      type: response
+      require-body: true
+      timeout: 10
+
+    # 高德地图开屏
+    - match: '^https?:\/\/.*\.amap\.com\/ws\/valueadded\/alimama\/splash_screen'
+      name: selected_amap
+      type: response
+      require-body: true
+      timeout: 10
+
+    # 百度地图广告响应
+    - match: '^https:\/\/newclient\.map\.baidu\.com\/client\/phpui2\/\?qt=ads'
+      name: selected_baidumap
+      type: response
+      require-body: true
+      timeout: 10
+
+    # 12306 广告列表
+    - match: '^https?:\/\/ad\.12306\.cn\/ad\/ser\/getAdList'
+      name: selected_12306
+      type: response
+      require-body: true
+      timeout: 10
+
+    # 航旅纵横启动页
+    - match: '^https?:\/\/.*umetrip\.com\.cn\/gateway\/api\/umetrip\/native$'
+      name: selected_umetrip
+      type: response
+      require-body: false
+      timeout: 10
+
+    # 爱奇艺开屏
+    - match: '^https?:\/\/.*cupid\.iqiyi\.com\/mixer\?'
+      name: selected_iqiyi
+      type: response
+      require-body: true
+      timeout: 10
+
+    # 网易云音乐开屏广告
+    - match: '^https?:\/\/interface(\d)?\.music\.163\.com\/e?api\/ad\/loading\/(get|current)'
+      name: selected_netease_music
+      type: response
+      require-body: true
+      timeout: 10
+    - match: '^https?:\/\/interface(\d)?\.music\.163\.com\/e?api\/ad\/get'
+      name: selected_netease_music
+      type: response
+      require-body: true
+      timeout: 10
+
+    # 夸克内容广告净化（仅调用在夸克 open-cms 接口）
+    - match: '^https?:\/\/open-cms-api\.quark\.cn\/open-cms'
+      name: selected_quark
+      type: response
+      require-body: true
+      timeout: 10
+
+  url-rewrite:
+    # ===== 淘宝 =====
+    - '^https?:\/\/guide-acs\.m\.taobao\.com\/gw\/mtop\.taobao\.wireless\.home\.splash\.awesome\.get - reject-200'
+    - '^https?:\/\/guide-acs\.m\.taobao\.com\/gw\/mtop\.fc\.resource\.tacdata\.get - reject-200'
+    - '^https?:\/\/acs\.m\.taobao\.com\/gw\/mtop\.alibaba\.advertisementservice\.getadv\/ - reject-200'
+    - '^https?:\/\/acs\.m\.taobao\.com\/gw\/mtop\.alibaba\.aicloud\.splash - reject-200'
+
+    # ===== 京东 =====
+    - '^https?:\/\/api\.m\.jd\.com\/client\.action\?functionId=(start|queryMaterialAdverts) - reject-200'
+    - '^https?:\/\/api\.m\.jd\.com\/client\.action\?functionId=home_launchConfig - reject-200'
+
+    # ===== 闲鱼 =====
+    - '^https?:\/\/acs\.m\.goofish\.com\/gw\/mtop.*splash\.ads - reject-200'
+
+    # ===== 菜鸟 =====
+    - '^https?:\/\/cn-acs\.m\.cainiao\.com\/gw\/mtop\.cainiao\.guoguo\.nbnetflow\.ads\.(show|mshow)\.cn\/ - reject-200'
+
+    # ===== 拼多多 =====
+    - '^https?:\/\/api\.(pinduoduo|yangkeduo)\.com\/api\/cappuccino\/splash - reject-200'
+
+    # ===== 盒马 =====
+    - '^https?:\/\/acs-m\.freshippo\.com\/gw\/mtop\.wdk\.render\.querysinglepage - reject-200'
+    - '^https?:\/\/acs\.m\.taobao\.com\/gw\/mtop\.wdk\.render\.querysinglepage - reject-200'
+
+    # ===== 山姆 =====
+    - '^https?:\/\/api-sams\.walmartmobile\.cn\/api\/v1\/sams\/sams-user\/(window\/getGoUpPlus|screen_promotion\/get) - reject-200'
+
+    # ===== 微博 =====
+    - '^https?:\/\/boot.*weibo\.com\/v\d\/ad\/realtime - reject-200'
+    - '^https?:\/\/boot.*weibo\.com\/v\d\/ad\/preload - reject-dict'
+    - '^https?:\/\/api\.weibo\.cn\/\d\/ad\/preload - reject-dict'
+    - '^https?:\/\/sdkapp\.uve\.weibo\.com\/interface\/sdk\/sdkconfig\.php - reject'
+
+    # ===== 小红书 =====
+    - '^https?:\/\/[a-z]+\.xiaohongshu\.com\/api\/sns\/v\d+\/system_service\/splash - reject-200'
+    - '^https?:\/\/[a-z]+\.xiaohongshu\.com\/api\/sns\/v\d+\/system_service\/splash_config - reject-dict'
+    - '^https?:\/\/[a-z]+\.xiaohongshu\.com\/api\/sns\/v\d+\/(tag\/)?ads - reject-200'
+
+    # ===== 高德地图 =====
+    - '^https?:\/\/.*\.amap\.com\/ws\/aos\/alimama\/splash_screen - reject-200'
+
+    # ===== 航旅纵横 =====
+    - '^https?:\/\/(discardrp|startup)\.umetrip\.com\/gateway\/api\/umetrip\/native - reject-200'
+
+    # ===== 携程 =====
+    - '^https?:\/\/m\.ctrip\.com\/restapi\/soa2\/\d+\/scjson\/tripAds - reject-200'
+    - '^https:\/\/ma-adx\.ctrip\.com\/_ma\.gif - reject-200'
+
+    # ===== 去哪儿 =====
+    - '^https:\/\/homefront\.qunar\.com\/front\/splash\/ad - reject-200'
+    - '^https?:\/\/client\.qunar\.com\/pitcher-proxy\?qrt=p_splashAd - reject-200'
+
+    # ===== 美团 / 美团外卖 =====
+    - '^https?:\/\/.*\.meituan\.com\/api\/v\d\/(openscreen\?ad|appstatus\?ad|loadInfo\?|startpicture) - reject-200'
+
+    # ===== 优酷 =====
+    - '^https?:\/\/iyes\.youku\.com\/uts\/v\d\/start - reject-200'
+
+    # ===== 百度网盘 =====
+    - '^https?:\/\/pan\.baidu\.com\/act\/v\d\/(bchannel|welfare)\/list - reject-200'
+    - '^https?:\/\/pan\.baidu\.com\/rest\/2\.0\/pcs\/ad - reject-200'
+    - '^https?:\/\/pan\.baidu\.com\/act\/api\/activityentry - reject-200'
+
+    # ===== 网易邮箱 =====
+    - '^https?:\/\/appconf\.mail\.163\.com\/mmad\/get\.do - reject-200'
+    - '^https?:\/\/client\.mail\.163\.com\/apptrack\/confinfo\/(searchMultiAds\.do|showAds\.do) - reject-200'
+
+script-providers:
+  selected_zhihu_openads:
+    url: https://raw.githubusercontent.com/ddgksf2013/Scripts/refs/heads/master/zhihu_openads.js
+    interval: 86400
+  selected_amap:
+    url: https://raw.githubusercontent.com/ddgksf2013/Scripts/refs/heads/master/amap.js
+    interval: 86400
+  selected_baidumap:
+    url: https://raw.githubusercontent.com/app2smile/rules/master/js/baidumap.js
+    interval: 86400
+  selected_12306:
+    url: https://raw.githubusercontent.com/ddgksf2013/Scripts/refs/heads/master/12306.js
+    interval: 86400
+  selected_umetrip:
+    url: https://raw.githubusercontent.com/ddgksf2013/Scripts/refs/heads/master/hanglvzongheng.js
+    interval: 86400
+  selected_iqiyi:
+    url: https://raw.githubusercontent.com/ddgksf2013/Scripts/refs/heads/master/iqiyi_open_ads.js
+    interval: 86400
+  selected_netease_music:
+    url: https://gist.githubusercontent.com/ddgksf2013/4f53b7c6083678df25fecc8ff68b52c4/raw/netease.adblock.js
+    interval: 86400
+  selected_quark:
+    url: https://raw.githubusercontent.com/ddgksf2013/Scripts/master/quark.js
+    interval: 86400
