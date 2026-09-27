@@ -1,5 +1,6 @@
+# V4 锁定版：除百度贴吧网络修复外，不再增强/改写其他 App；微博恢复并锁定为已实测有效版本。
 name: 精选App去开屏
-desc: 淘宝/京东/闲鱼/菜鸟/拼多多/盒马/山姆/微博/小红书/知乎/高德/百度地图/12306/航旅纵横/携程/去哪儿/美团/网易云/爱奇艺/优酷/百度网盘/夸克/网易邮箱
+desc: 淘宝/京东/闲鱼/菜鸟/拼多多/盒马/山姆/微博/小红书/知乎/百度贴吧/高德/百度地图/12306/航旅纵横/携程/去哪儿/美团/网易云/爱奇艺/优酷/百度网盘/夸克/网易邮箱
 
 http:
   mitm:
@@ -15,10 +16,14 @@ http:
     - "api-sams.walmartmobile.cn"
 
     # 社交 / 内容
-    - "api.weibo.cn"
-    - "*.uve.weibo.com"
+    - "bootrealtime.uve.weibo.com"
+    - "bootpreload.uve.weibo.com"
+    - "sdkapp.uve.weibo.com"
+    - "wbapp.uve.weibo.com"
+    - "adstrategy.biz.weibo.com"
     - "*.xiaohongshu.com"
     - "api.zhihu.com"
+    - "tiebac.baidu.com"
 
     # 出行
     - "*.amap.com"
@@ -134,11 +139,13 @@ http:
     # ===== 山姆 =====
     - '^https?:\/\/api-sams\.walmartmobile\.cn\/api\/v1\/sams\/sams-user\/(window\/getGoUpPlus|screen_promotion\/get) - reject-200'
 
-    # ===== 微博 =====
-    - '^https?:\/\/boot.*weibo\.com\/v\d\/ad\/realtime - reject-200'
-    - '^https?:\/\/boot.*weibo\.com\/v\d\/ad\/preload - reject-dict'
-    - '^https?:\/\/api\.weibo\.cn\/\d\/ad\/preload - reject-dict'
-    - '^https?:\/\/sdkapp\.uve\.weibo\.com\/interface\/sdk\/sdkconfig\.php - reject'
+    # ===== 微博（锁定：你已实测成功的版本） =====
+    - '^https:\/\/bootrealtime\.uve\.weibo\.com\/v[23]\/ad\/realtime - reject-dict'
+    - '^https:\/\/bootpreload\.uve\.weibo\.com\/v1\/ad\/preload - reject-dict'
+    - '^https:\/\/sdkapp\.uve\.weibo\.com\/interface\/sdk\/(get-lbs-cell-info\.php|sdkconfig\.php) - reject'
+
+    # ===== 百度贴吧（仅保留上游原始最小广告规则；不拦 IP、不挂脚本，避免断网） =====
+    - '^https?:\/\/tiebac\.baidu\.com\/c\/f\/ad\/getFeedAd - reject-200'
 
     # ===== 小红书 =====
     - '^https?:\/\/[a-z]+\.xiaohongshu\.com\/api\/sns\/v\d+\/system_service\/splash - reject-200'
